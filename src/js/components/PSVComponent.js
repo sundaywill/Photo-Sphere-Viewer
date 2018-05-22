@@ -4,19 +4,19 @@
 
 /**
  * Base sub-component class
- * @param {PhotoSphereViewer | module:components.PSVComponent} parent
+ * @param {PanoSphereViewer | module:components.PSVComponent} parent
  * @constructor
  * @memberof module:components
  */
 function PSVComponent(parent) {
   /**
-   * @member {PhotoSphereViewer}
+   * @member {PanoSphereViewer}
    * @readonly
    */
-  this.psv = parent instanceof PhotoSphereViewer ? parent : parent.psv;
+  this.psv = parent instanceof PanoSphereViewer ? parent : parent.psv;
 
   /**
-   * @member {PhotoSphereViewer|module:components.PSVComponent}
+   * @member {PanoSphereViewer|module:components.PSVComponent}
    * @readonly
    */
   this.parent = parent;

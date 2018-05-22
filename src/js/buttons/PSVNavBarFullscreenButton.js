@@ -25,9 +25,9 @@ PSVNavBarFullscreenButton.iconActive = 'fullscreen-out.svg';
 PSVNavBarFullscreenButton.prototype.create = function() {
   PSVNavBarButton.prototype.create.call(this);
 
-  if (!PhotoSphereViewer.SYSTEM.fullscreenEvent) {
+  if (!PanoSphereViewer.SYSTEM.fullscreenEvent) {
     this.hide();
-    console.warn('PhotoSphereViewer: fullscreen not supported.');
+    console.warn('PanoSphereViewer: fullscreen not supported.');
   }
 
   this.psv.on('fullscreen-updated', this);

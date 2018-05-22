@@ -3,6 +3,6 @@
 /.sass-cache
 /.idea
 /*.iml
-/dist
+#/dist
 /doc
 package-lock.json

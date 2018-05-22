@@ -7,10 +7,10 @@ var PSVUtils = {};
 /**
  * @summary exposes {@link PSVUtils}
  * @member {object}
- * @memberof PhotoSphereViewer
+ * @memberof PanoSphereViewer
  * @readonly
  */
-PhotoSphereViewer.Utils = PSVUtils;
+PanoSphereViewer.Utils = PSVUtils;
 
 /**
  * @summary Short-Hand for PI*2

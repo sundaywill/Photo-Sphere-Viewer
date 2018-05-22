@@ -2,8 +2,8 @@
  * @summary Inits the global SYSTEM var with generic support information
  * @private
  */
-PhotoSphereViewer._loadSystem = function() {
-  var S = PhotoSphereViewer.SYSTEM;
+PanoSphereViewer._loadSystem = function() {
+  var S = PanoSphereViewer.SYSTEM;
   S.loaded = true;
   S.pixelRatio = window.devicePixelRatio || 1;
   S.isWebGLSupported = PSVUtils.isWebGLSupported();
@@ -16,10 +16,10 @@ PhotoSphereViewer._loadSystem = function() {
 
 /**
  * @summary Sets the viewer size
- * @param {PhotoSphereViewer.Size} size
+ * @param {PanoSphereViewer.Size} size
  * @private
  */
-PhotoSphereViewer.prototype._setViewerSize = function(size) {
+PanoSphereViewer.prototype._setViewerSize = function(size) {
   ['width', 'height'].forEach(function(dim) {
     if (size[dim]) {
       if (/^[0-9.]+$/.test(size[dim])) {
@@ -32,10 +32,10 @@ PhotoSphereViewer.prototype._setViewerSize = function(size) {
 
 /**
  * @summary Converts pixel texture coordinates to spherical radians coordinates
- * @param {PhotoSphereViewer.Point} point
- * @returns {PhotoSphereViewer.Position}
+ * @param {PanoSphereViewer.Point} point
+ * @returns {PanoSphereViewer.Position}
  */
-PhotoSphereViewer.prototype.textureCoordsToSphericalCoords = function(point) {
+PanoSphereViewer.prototype.textureCoordsToSphericalCoords = function(point) {
   if (this.prop.isCubemap) {
     throw new PSVError('Unable to use texture coords with cubemap.');
   }
@@ -51,10 +51,10 @@ PhotoSphereViewer.prototype.textureCoordsToSphericalCoords = function(point) {
 
 /**
  * @summary Converts spherical radians coordinates to pixel texture coordinates
- * @param {PhotoSphereViewer.Position} position
- * @returns {PhotoSphereViewer.Point}
+ * @param {PanoSphereViewer.Position} position
+ * @returns {PanoSphereViewer.Point}
  */
-PhotoSphereViewer.prototype.sphericalCoordsToTextureCoords = function(position) {
+PanoSphereViewer.prototype.sphericalCoordsToTextureCoords = function(position) {
   if (this.prop.isCubemap) {
     throw new PSVError('Unable to use texture coords with cubemap.');
   }
@@ -70,23 +70,23 @@ PhotoSphereViewer.prototype.sphericalCoordsToTextureCoords = function(position) 
 
 /**
  * @summary Converts spherical radians coordinates to a THREE.Vector3
- * @param {PhotoSphereViewer.Position} position
+ * @param {PanoSphereViewer.Position} position
  * @returns {THREE.Vector3}
  */
-PhotoSphereViewer.prototype.sphericalCoordsToVector3 = function(position) {
+PanoSphereViewer.prototype.sphericalCoordsToVector3 = function(position) {
   return new THREE.Vector3(
-    PhotoSphereViewer.SPHERE_RADIUS * -Math.cos(position.latitude) * Math.sin(position.longitude),
-    PhotoSphereViewer.SPHERE_RADIUS * Math.sin(position.latitude),
-    PhotoSphereViewer.SPHERE_RADIUS * Math.cos(position.latitude) * Math.cos(position.longitude)
+    PanoSphereViewer.SPHERE_RADIUS * -Math.cos(position.latitude) * Math.sin(position.longitude),
+    PanoSphereViewer.SPHERE_RADIUS * Math.sin(position.latitude),
+    PanoSphereViewer.SPHERE_RADIUS * Math.cos(position.latitude) * Math.cos(position.longitude)
   );
 };
 
 /**
  * @summary Converts a THREE.Vector3 to spherical radians coordinates
  * @param {THREE.Vector3} vector
- * @returns {PhotoSphereViewer.Position}
+ * @returns {PanoSphereViewer.Position}
  */
-PhotoSphereViewer.prototype.vector3ToSphericalCoords = function(vector) {
+PanoSphereViewer.prototype.vector3ToSphericalCoords = function(vector) {
   var phi = Math.acos(vector.y / Math.sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z));
   var theta = Math.atan2(vector.x, vector.z);
 
@@ -98,10 +98,10 @@ PhotoSphereViewer.prototype.vector3ToSphericalCoords = function(vector) {
 
 /**
  * @summary Converts position on the viewer to a THREE.Vector3
- * @param {PhotoSphereViewer.Point} viewerPoint
+ * @param {PanoSphereViewer.Point} viewerPoint
  * @returns {THREE.Vector3}
  */
-PhotoSphereViewer.prototype.viewerCoordsToVector3 = function(viewerPoint) {
+PanoSphereViewer.prototype.viewerCoordsToVector3 = function(viewerPoint) {
   var screen = new THREE.Vector2(
     2 * viewerPoint.x / this.prop.size.width - 1,
     -2 * viewerPoint.y / this.prop.size.height + 1
@@ -122,9 +122,9 @@ PhotoSphereViewer.prototype.viewerCoordsToVector3 = function(viewerPoint) {
 /**
  * @summary Converts a THREE.Vector3 to position on the viewer
  * @param {THREE.Vector3} vector
- * @returns {PhotoSphereViewer.Point}
+ * @returns {PanoSphereViewer.Point}
  */
-PhotoSphereViewer.prototype.vector3ToViewerCoords = function(vector) {
+PanoSphereViewer.prototype.vector3ToViewerCoords = function(vector) {
   vector = vector.clone();
   vector.project(this.camera);
 
@@ -136,10 +136,10 @@ PhotoSphereViewer.prototype.vector3ToViewerCoords = function(vector) {
 
 /**
  * @summary Converts x/y to latitude/longitude if present and ensure boundaries
- * @param {PhotoSphereViewer.ExtendedPosition} position - mutated
+ * @param {PanoSphereViewer.ExtendedPosition} position - mutated
  * @private
  */
-PhotoSphereViewer.prototype.cleanPosition = function(position) {
+PanoSphereViewer.prototype.cleanPosition = function(position) {
   if (position.hasOwnProperty('x') && position.hasOwnProperty('y')) {
     PSVUtils.deepmerge(position, this.textureCoordsToSphericalCoords(position));
   }
@@ -150,11 +150,11 @@ PhotoSphereViewer.prototype.cleanPosition = function(position) {
 
 /**
  * @summary Apply "longitude_range" and "latitude_range"
- * @param {PhotoSphereViewer.Position} position - mutated
+ * @param {PanoSphereViewer.Position} position - mutated
  * @returns {string[]} list of sides that were reached
  * @private
  */
-PhotoSphereViewer.prototype.applyRanges = function(position) {
+PanoSphereViewer.prototype.applyRanges = function(position) {
   var range, offset, sidesReached = [];
 
   if (this.config.longitude_range) {

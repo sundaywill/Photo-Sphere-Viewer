@@ -3,7 +3,7 @@ var fs = require('fs');
 var assert = require('assert');
 
 // Load PSVUtils (not a node module) in current context
-global.PhotoSphereViewer = {};
+global.PanoSphereViewer = {};
 vm.runInThisContext(fs.readFileSync('node_modules/three/build/three.js'));
 vm.runInThisContext(fs.readFileSync('src/js/PSVError.js'));
 vm.runInThisContext(fs.readFileSync('src/js/PSVUtils.js'));

@@ -4,7 +4,7 @@
  * @readonly
  * @private
  */
-PhotoSphereViewer.MOVE_THRESHOLD = 4;
+PanoSphereViewer.MOVE_THRESHOLD = 4;
 
 /**
  * @summary Angle in radians bellow which two angles are considered identical
@@ -12,7 +12,7 @@ PhotoSphereViewer.MOVE_THRESHOLD = 4;
  * @readonly
  * @private
  */
-PhotoSphereViewer.ANGLE_THRESHOLD = 0.003;
+PanoSphereViewer.ANGLE_THRESHOLD = 0.003;
 
 /**
  * @summary Delay in milliseconds between two clicks to consider a double click
@@ -20,7 +20,7 @@ PhotoSphereViewer.ANGLE_THRESHOLD = 0.003;
  * @readonly
  * @private
  */
-PhotoSphereViewer.DBLCLICK_DELAY = 300;
+PanoSphereViewer.DBLCLICK_DELAY = 300;
 
 /**
  * @summary Time size of the mouse position history used to compute inertia
@@ -28,7 +28,7 @@ PhotoSphereViewer.DBLCLICK_DELAY = 300;
  * @readonly
  * @private
  */
-PhotoSphereViewer.INERTIA_WINDOW = 300;
+PanoSphereViewer.INERTIA_WINDOW = 300;
 
 /**
  * @summary Radius of the THREE.SphereGeometry
@@ -37,7 +37,7 @@ PhotoSphereViewer.INERTIA_WINDOW = 300;
  * @readonly
  * @private
  */
-PhotoSphereViewer.SPHERE_RADIUS = 100;
+PanoSphereViewer.SPHERE_RADIUS = 100;
 
 /**
  * @summary Number of vertice of the THREE.SphereGeometry
@@ -45,7 +45,7 @@ PhotoSphereViewer.SPHERE_RADIUS = 100;
  * @readonly
  * @private
  */
-PhotoSphereViewer.SPHERE_VERTICES = 64;
+PanoSphereViewer.SPHERE_VERTICES = 64;
 
 /**
  * @summary Number of vertices of each side of the THREE.BoxGeometry
@@ -53,7 +53,7 @@ PhotoSphereViewer.SPHERE_VERTICES = 64;
  * @readonly
  * @private
  */
-PhotoSphereViewer.CUBE_VERTICES = 8;
+PanoSphereViewer.CUBE_VERTICES = 8;
 
 /**
  * @summary Order of cube textures for arrays
@@ -61,7 +61,7 @@ PhotoSphereViewer.CUBE_VERTICES = 8;
  * @readonly
  * @private
  */
-PhotoSphereViewer.CUBE_MAP = [0, 2, 4, 5, 3, 1];
+PanoSphereViewer.CUBE_MAP = [0, 2, 4, 5, 3, 1];
 
 /**
  * @summary Order of cube textures for maps
@@ -69,7 +69,7 @@ PhotoSphereViewer.CUBE_MAP = [0, 2, 4, 5, 3, 1];
  * @readonly
  * @private
  */
-PhotoSphereViewer.CUBE_HASHMAP = ['left', 'right', 'top', 'bottom', 'back', 'front'];
+PanoSphereViewer.CUBE_HASHMAP = ['left', 'right', 'top', 'bottom', 'back', 'front'];
 
 /**
  * @summary Map between keyboard events `keyCode|which` and `key`
@@ -77,7 +77,7 @@ PhotoSphereViewer.CUBE_HASHMAP = ['left', 'right', 'top', 'bottom', 'back', 'fro
  * @readonly
  * @private
  */
-PhotoSphereViewer.KEYMAP = {
+PanoSphereViewer.KEYMAP = {
   33: 'PageUp',
   34: 'PageDown',
   37: 'ArrowLeft',
@@ -94,7 +94,7 @@ PhotoSphereViewer.KEYMAP = {
  * @readonly
  * @private
  */
-PhotoSphereViewer.SYSTEM = {
+PanoSphereViewer.SYSTEM = {
   loaded: false,
   pixelRatio: 1,
   isWebGLSupported: false,
@@ -110,14 +110,14 @@ PhotoSphereViewer.SYSTEM = {
  * @type {Object.<string, string>}
  * @readonly
  */
-PhotoSphereViewer.ICONS = {};
+PanoSphereViewer.ICONS = {};
 
 /**
  * @summary Default options, see {@link http://photo-sphere-viewer.js.org/#options}
  * @type {Object}
  * @readonly
  */
-PhotoSphereViewer.DEFAULTS = {
+PanoSphereViewer.DEFAULTS = {
   panorama: null,
   container: null,
   caption: null,
@@ -192,7 +192,7 @@ PhotoSphereViewer.DEFAULTS = {
  * @type {Object.<string, string>}
  * @readonly
  */
-PhotoSphereViewer.TEMPLATES = {
+PanoSphereViewer.TEMPLATES = {
   markersList: '\
 <div class="psv-markers-list-container"> \
   <h1 class="psv-markers-list-title">{{= it.config.lang.markers }}</h1> \

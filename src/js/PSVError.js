@@ -21,7 +21,7 @@ PSVError.prototype.constructor = PSVError;
 
 /**
  * @summary exposes {@link PSVError}
- * @memberof PhotoSphereViewer
+ * @memberof PanoSphereViewer
  * @readonly
  */
-PhotoSphereViewer.Error = PSVError;
+PanoSphereViewer.Error = PSVError;

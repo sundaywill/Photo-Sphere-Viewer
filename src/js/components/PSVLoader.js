@@ -1,6 +1,6 @@
 /**
  * Loader class
- * @param {PhotoSphereViewer} psv
+ * @param {PanoSphereViewer} psv
  * @constructor
  * @extends module:components.PSVComponent
  * @memberof module:components
@@ -38,7 +38,7 @@ PSVLoader.className = 'psv-loader-container';
 PSVLoader.prototype.create = function() {
   PSVComponent.prototype.create.call(this);
 
-  var pixelRatio = PhotoSphereViewer.SYSTEM.pixelRatio;
+  var pixelRatio = PanoSphereViewer.SYSTEM.pixelRatio;
 
   this.loader = document.createElement('div');
   this.loader.className = 'psv-loader';

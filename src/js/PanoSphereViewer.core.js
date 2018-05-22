@@ -1,13 +1,13 @@
 /**
- * @summary Main event loop, calls {@link PhotoSphereViewer._render} if `prop.needsUpdate` is true
+ * @summary Main event loop, calls {@link PanoSphereViewer._render} if `prop.needsUpdate` is true
  * @param {int} timestamp
- * @fires PhotoSphereViewer.filter:before-render
+ * @fires PanoSphereViewer.filter:before-render
  * @private
  */
-PhotoSphereViewer.prototype._run = function(timestamp) {
+PanoSphereViewer.prototype._run = function(timestamp) {
   /**
    * @event before-render
-   * @memberof PhotoSphereViewer
+   * @memberof PanoSphereViewer
    * @summary Triggered before a render, used to modify the view
    * @param {int} timestamp - time provided by requestAnimationFrame
    */
@@ -23,10 +23,10 @@ PhotoSphereViewer.prototype._run = function(timestamp) {
 
 /**
  * @summary Performs a render
- * @fires PhotoSphereViewer.render
+ * @fires PanoSphereViewer.render
  * @private
  */
-PhotoSphereViewer.prototype._render = function() {
+PanoSphereViewer.prototype._render = function() {
   this.prop.direction = this.sphericalCoordsToVector3(this.prop.position);
   this.camera.position.set(0, 0, 0);
   this.camera.lookAt(this.prop.direction);
@@ -43,7 +43,7 @@ PhotoSphereViewer.prototype._render = function() {
 
   /**
    * @event render
-   * @memberof PhotoSphereViewer
+   * @memberof PanoSphereViewer
    * @summary Triggered on each viewer render, **this event is triggered very often**
    */
   this.trigger('render');
@@ -52,11 +52,11 @@ PhotoSphereViewer.prototype._render = function() {
 /**
  * @summary Loads the XMP data with AJAX
  * @param {string} panorama
- * @returns {Promise.<PhotoSphereViewer.PanoData>}
+ * @returns {Promise.<PanoSphereViewer.PanoData>}
  * @throws {PSVError} when the image cannot be loaded
  * @private
  */
-PhotoSphereViewer.prototype._loadXMP = function(panorama) {
+PanoSphereViewer.prototype._loadXMP = function(panorama) {
   if (!this.config.usexmpdata) {
     return D.resolved(null);
   }
@@ -89,7 +89,7 @@ PhotoSphereViewer.prototype._loadXMP = function(panorama) {
           };
 
           if (!pano_data.full_width || !pano_data.full_height || !pano_data.cropped_width || !pano_data.cropped_height) {
-            console.warn('PhotoSphereViewer: invalid XMP data');
+            console.warn('PanoSphereViewer: invalid XMP data');
             defer.resolve(null);
           }
           else {
@@ -132,11 +132,11 @@ PhotoSphereViewer.prototype._loadXMP = function(panorama) {
  * @summary Loads the panorama texture(s)
  * @param {string|string[]} panorama
  * @returns {Promise.<THREE.Texture|THREE.Texture[]>}
- * @fires PhotoSphereViewer.panorama-load-progress
+ * @fires PanoSphereViewer.panorama-load-progress
  * @throws {PSVError} when the image cannot be loaded
  * @private
  */
-PhotoSphereViewer.prototype._loadTexture = function(panorama) {
+PanoSphereViewer.prototype._loadTexture = function(panorama) {
   var tempPanorama = [];
 
   if (Array.isArray(panorama)) {
@@ -146,19 +146,19 @@ PhotoSphereViewer.prototype._loadTexture = function(panorama) {
 
     // reorder images
     for (var i = 0; i < 6; i++) {
-      tempPanorama[i] = panorama[PhotoSphereViewer.CUBE_MAP[i]];
+      tempPanorama[i] = panorama[PanoSphereViewer.CUBE_MAP[i]];
     }
     panorama = tempPanorama;
   }
   else if (typeof panorama === 'object') {
-    if (!PhotoSphereViewer.CUBE_HASHMAP.every(function(side) {
+    if (!PanoSphereViewer.CUBE_HASHMAP.every(function(side) {
         return !!panorama[side];
       })) {
       throw new PSVError('Must provide exactly left, front, right, back, top, bottom when using cubemap.');
     }
 
     // transform into array
-    PhotoSphereViewer.CUBE_HASHMAP.forEach(function(side, i) {
+    PanoSphereViewer.CUBE_HASHMAP.forEach(function(side, i) {
       tempPanorama[i] = panorama[side];
     });
     panorama = tempPanorama;
@@ -170,10 +170,10 @@ PhotoSphereViewer.prototype._loadTexture = function(panorama) {
     }
 
     if (this.config.fisheye) {
-      console.warn('PhotoSphereViewer: fisheye effect with cubemap texture can generate distorsions.');
+      console.warn('PanoSphereViewer: fisheye effect with cubemap texture can generate distorsions.');
     }
 
-    if (this.config.cache_texture === PhotoSphereViewer.DEFAULTS.cache_texture) {
+    if (this.config.cache_texture === PanoSphereViewer.DEFAULTS.cache_texture) {
       this.config.cache_texture *= 6;
     }
 
@@ -196,11 +196,11 @@ PhotoSphereViewer.prototype._loadTexture = function(panorama) {
  * @summary Loads the sphere texture
  * @param {string} panorama
  * @returns {Promise.<THREE.Texture>}
- * @fires PhotoSphereViewer.panorama-load-progress
+ * @fires PanoSphereViewer.panorama-load-progress
  * @throws {PSVError} when the image cannot be loaded
  * @private
  */
-PhotoSphereViewer.prototype._loadEquirectangularTexture = function(panorama) {
+PanoSphereViewer.prototype._loadEquirectangularTexture = function(panorama) {
   if (this.config.cache_texture) {
     var cache = this.getPanoramaCache(panorama);
 
@@ -225,7 +225,7 @@ PhotoSphereViewer.prototype._loadEquirectangularTexture = function(panorama) {
 
       /**
        * @event panorama-load-progress
-       * @memberof PhotoSphereViewer
+       * @memberof PanoSphereViewer
        * @summary Triggered while a panorama image is loading
        * @param {string} panorama
        * @param {int} progress
@@ -253,7 +253,7 @@ PhotoSphereViewer.prototype._loadEquirectangularTexture = function(panorama) {
 
       var texture;
 
-      var ratio = Math.min(pano_data.full_width, PhotoSphereViewer.SYSTEM.maxTextureWidth) / pano_data.full_width;
+      var ratio = Math.min(pano_data.full_width, PanoSphereViewer.SYSTEM.maxTextureWidth) / pano_data.full_width;
 
       // resize image / fill cropped parts with black
       if (ratio !== 1 || pano_data.cropped_width !== pano_data.full_width || pano_data.cropped_height !== pano_data.full_height) {
@@ -325,11 +325,11 @@ PhotoSphereViewer.prototype._loadEquirectangularTexture = function(panorama) {
  * @summary Load the six textures of the cube
  * @param {string[]} panorama
  * @returns {Promise.<THREE.Texture[]>}
- * @fires PhotoSphereViewer.panorama-load-progress
+ * @fires PanoSphereViewer.panorama-load-progress
  * @throws {PSVError} when the image cannot be loaded
  * @private
  */
-PhotoSphereViewer.prototype._loadCubemapTexture = function(panorama) {
+PanoSphereViewer.prototype._loadCubemapTexture = function(panorama) {
   var defer = D();
   var loader = new THREE.ImageLoader();
   var progress = [0, 0, 0, 0, 0, 0];
@@ -355,7 +355,7 @@ PhotoSphereViewer.prototype._loadCubemapTexture = function(panorama) {
     this.loader.setProgress(PSVUtils.sum(progress) / 6);
     this.trigger('panorama-load-progress', panorama[i], progress[i]);
 
-    var ratio = Math.min(img.width, PhotoSphereViewer.SYSTEM.maxTextureWidth / 2) / img.width;
+    var ratio = Math.min(img.width, PanoSphereViewer.SYSTEM.maxTextureWidth / 2) / img.width;
 
     // resize image
     if (ratio !== 1) {
@@ -427,10 +427,10 @@ PhotoSphereViewer.prototype._loadCubemapTexture = function(panorama) {
 /**
  * @summary Applies the texture to the scene, creates the scene if needed
  * @param {THREE.Texture|THREE.Texture[]} texture
- * @fires PhotoSphereViewer.panorama-loaded
+ * @fires PanoSphereViewer.panorama-loaded
  * @private
  */
-PhotoSphereViewer.prototype._setTexture = function(texture) {
+PanoSphereViewer.prototype._setTexture = function(texture) {
   if (!this.scene) {
     this._createScene();
   }
@@ -454,7 +454,7 @@ PhotoSphereViewer.prototype._setTexture = function(texture) {
 
   /**
    * @event panorama-loaded
-   * @memberof PhotoSphereViewer
+   * @memberof PanoSphereViewer
    * @summary Triggered when a panorama image has been loaded
    */
   this.trigger('panorama-loaded');
@@ -466,19 +466,19 @@ PhotoSphereViewer.prototype._setTexture = function(texture) {
  * @summary Creates the 3D scene and GUI components
  * @private
  */
-PhotoSphereViewer.prototype._createScene = function() {
+PanoSphereViewer.prototype._createScene = function() {
   this.raycaster = new THREE.Raycaster();
 
-  this.renderer = PhotoSphereViewer.SYSTEM.isWebGLSupported && this.config.webgl ? new THREE.WebGLRenderer() : new THREE.CanvasRenderer();
+  this.renderer = PanoSphereViewer.SYSTEM.isWebGLSupported && this.config.webgl ? new THREE.WebGLRenderer() : new THREE.CanvasRenderer();
   this.renderer.setSize(this.prop.size.width, this.prop.size.height);
-  this.renderer.setPixelRatio(PhotoSphereViewer.SYSTEM.pixelRatio);
+  this.renderer.setPixelRatio(PanoSphereViewer.SYSTEM.pixelRatio);
 
-  var cameraDistance = PhotoSphereViewer.SPHERE_RADIUS;
+  var cameraDistance = PanoSphereViewer.SPHERE_RADIUS;
   if (this.prop.isCubemap) {
     cameraDistance *= Math.sqrt(3);
   }
   if (this.config.fisheye) {
-    cameraDistance += PhotoSphereViewer.SPHERE_RADIUS;
+    cameraDistance += PanoSphereViewer.SPHERE_RADIUS;
   }
 
   this.camera = new THREE.PerspectiveCamera(this.config.default_fov, this.prop.size.width / this.prop.size.height, 1, cameraDistance);
@@ -506,18 +506,18 @@ PhotoSphereViewer.prototype._createScene = function() {
  * @summary Creates the sphere mesh
  * @private
  */
-PhotoSphereViewer.prototype._createSphere = function() {
+PanoSphereViewer.prototype._createSphere = function() {
   // The middle of the panorama is placed at longitude=0
   var geometry = new THREE.SphereGeometry(
-    PhotoSphereViewer.SPHERE_RADIUS,
-    PhotoSphereViewer.SPHERE_VERTICES,
-    PhotoSphereViewer.SPHERE_VERTICES,
+    PanoSphereViewer.SPHERE_RADIUS,
+    PanoSphereViewer.SPHERE_VERTICES,
+    PanoSphereViewer.SPHERE_VERTICES,
     -PSVUtils.HalfPI
   );
 
   var material = new THREE.MeshBasicMaterial({
     side: THREE.DoubleSide, // needs to be DoubleSide for CanvasRenderer
-    overdraw: PhotoSphereViewer.SYSTEM.isWebGLSupported && this.config.webgl ? 0 : 1
+    overdraw: PanoSphereViewer.SYSTEM.isWebGLSupported && this.config.webgl ? 0 : 1
   });
 
   this.mesh = new THREE.Mesh(geometry, material);
@@ -533,24 +533,24 @@ PhotoSphereViewer.prototype._createSphere = function() {
  * @summary Creates the cube mesh
  * @private
  */
-PhotoSphereViewer.prototype._createCubemap = function() {
+PanoSphereViewer.prototype._createCubemap = function() {
   var geometry = new THREE.BoxGeometry(
-    PhotoSphereViewer.SPHERE_RADIUS * 2, PhotoSphereViewer.SPHERE_RADIUS * 2, PhotoSphereViewer.SPHERE_RADIUS * 2,
-    PhotoSphereViewer.CUBE_VERTICES, PhotoSphereViewer.CUBE_VERTICES, PhotoSphereViewer.CUBE_VERTICES
+    PanoSphereViewer.SPHERE_RADIUS * 2, PanoSphereViewer.SPHERE_RADIUS * 2, PanoSphereViewer.SPHERE_RADIUS * 2,
+    PanoSphereViewer.CUBE_VERTICES, PanoSphereViewer.CUBE_VERTICES, PanoSphereViewer.CUBE_VERTICES
   );
 
   var materials = [];
   for (var i = 0; i < 6; i++) {
     materials.push(new THREE.MeshBasicMaterial({
       side: THREE.BackSide,
-      overdraw: PhotoSphereViewer.SYSTEM.isWebGLSupported && this.config.webgl ? 0 : 1
+      overdraw: PanoSphereViewer.SYSTEM.isWebGLSupported && this.config.webgl ? 0 : 1
     }));
   }
 
   this.mesh = new THREE.Mesh(geometry, materials);
-  this.mesh.position.x -= PhotoSphereViewer.SPHERE_RADIUS;
-  this.mesh.position.y -= PhotoSphereViewer.SPHERE_RADIUS;
-  this.mesh.position.z -= PhotoSphereViewer.SPHERE_RADIUS;
+  this.mesh.position.x -= PanoSphereViewer.SPHERE_RADIUS;
+  this.mesh.position.y -= PanoSphereViewer.SPHERE_RADIUS;
+  this.mesh.position.z -= PanoSphereViewer.SPHERE_RADIUS;
   this.mesh.applyMatrix(new THREE.Matrix4().makeScale(1, 1, -1));
 
   this.scene.add(this.mesh);
@@ -559,27 +559,27 @@ PhotoSphereViewer.prototype._createCubemap = function() {
 /**
  * @summary Performs transition between the current and a new texture
  * @param {THREE.Texture} texture
- * @param {PhotoSphereViewer.Position} [position]
+ * @param {PanoSphereViewer.Position} [position]
  * @returns {Promise}
  * @private
  * @throws {PSVError} if the panorama is a cubemap
  */
-PhotoSphereViewer.prototype._transition = function(texture, position) {
+PanoSphereViewer.prototype._transition = function(texture, position) {
   if (this.prop.isCubemap) {
     throw new PSVError('Transition is not available with cubemap.');
   }
 
   // create a new sphere with the new texture
   var geometry = new THREE.SphereGeometry(
-    PhotoSphereViewer.SPHERE_RADIUS * 0.9,
-    PhotoSphereViewer.SPHERE_VERTICES,
-    PhotoSphereViewer.SPHERE_VERTICES,
+    PanoSphereViewer.SPHERE_RADIUS * 0.9,
+    PanoSphereViewer.SPHERE_VERTICES,
+    PanoSphereViewer.SPHERE_VERTICES,
     -PSVUtils.HalfPI
   );
 
   var material = new THREE.MeshBasicMaterial({
     side: THREE.DoubleSide,
-    overdraw: PhotoSphereViewer.SYSTEM.isWebGLSupported && this.config.webgl ? 0 : 1,
+    overdraw: PanoSphereViewer.SYSTEM.isWebGLSupported && this.config.webgl ? 0 : 1,
     map: texture,
     transparent: true,
     opacity: 0
@@ -601,7 +601,7 @@ PhotoSphereViewer.prototype._transition = function(texture, position) {
     // FIXME: find a better way to handle ranges
     if (this.config.latitude_range || this.config.longitude_range) {
       this.config.longitude_range = this.config.latitude_range = null;
-      console.warn('PhotoSphereViewer: trying to perform transition with longitude_range and/or latitude_range, ranges cleared.');
+      console.warn('PanoSphereViewer: trying to perform transition with longitude_range and/or latitude_range, ranges cleared.');
     }
   }
 
@@ -643,7 +643,7 @@ PhotoSphereViewer.prototype._transition = function(texture, position) {
  * @summary Reverses autorotate direction with smooth transition
  * @private
  */
-PhotoSphereViewer.prototype._reverseAutorotate = function() {
+PanoSphereViewer.prototype._reverseAutorotate = function() {
   var self = this;
   var newSpeed = -this.config.anim_speed;
   var range = this.config.longitude_range;
@@ -679,12 +679,12 @@ PhotoSphereViewer.prototype._reverseAutorotate = function() {
 
 /**
  * @summary Adds a panorama to the cache
- * @param {PhotoSphereViewer.CacheItem} cache
- * @fires PhotoSphereViewer.panorama-cached
+ * @param {PanoSphereViewer.CacheItem} cache
+ * @fires PanoSphereViewer.panorama-cached
  * @throws {PSVError} when the cache is disabled
  * @private
  */
-PhotoSphereViewer.prototype._putPanoramaCache = function(cache) {
+PanoSphereViewer.prototype._putPanoramaCache = function(cache) {
   if (!this.config.cache_texture) {
     throw new PSVError('Cannot add panorama to cache, cache_texture is disabled');
   }
@@ -702,7 +702,7 @@ PhotoSphereViewer.prototype._putPanoramaCache = function(cache) {
 
   /**
    * @event panorama-cached
-   * @memberof PhotoSphereViewer
+   * @memberof PanoSphereViewer
    * @summary Triggered when a panorama is stored in the cache
    * @param {string} panorama
    */
@@ -713,7 +713,7 @@ PhotoSphereViewer.prototype._putPanoramaCache = function(cache) {
  * @summary Stops all current animations
  * @private
  */
-PhotoSphereViewer.prototype._stopAll = function() {
+PanoSphereViewer.prototype._stopAll = function() {
   this.stopAutorotate();
   this.stopAnimation();
   this.stopGyroscopeControl();

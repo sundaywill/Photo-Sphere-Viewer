@@ -25,7 +25,7 @@ PSVNavBarStereoButton.icon = 'stereo.svg';
 PSVNavBarStereoButton.prototype.create = function() {
   PSVNavBarButton.prototype.create.call(this);
 
-  PhotoSphereViewer.SYSTEM.deviceOrientationSupported.then(
+  PanoSphereViewer.SYSTEM.deviceOrientationSupported.then(
     this._onAvailabilityChange.bind(this, true),
     this._onAvailabilityChange.bind(this, false)
   );

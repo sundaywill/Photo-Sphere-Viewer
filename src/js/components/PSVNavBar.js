@@ -1,6 +1,6 @@
 /**
  * Navigation bar class
- * @param {PhotoSphereViewer} psv
+ * @param {PanoSphereViewer} psv
  * @constructor
  * @extends module:components.PSVComponent
  * @memberof module:components
@@ -24,7 +24,7 @@ function PSVNavBar(psv) {
 
   // all buttons
   if (this.config === true) {
-    this.config = PSVUtils.clone(PhotoSphereViewer.DEFAULTS.navbar);
+    this.config = PSVUtils.clone(PanoSphereViewer.DEFAULTS.navbar);
   }
   // space separated list
   else if (typeof this.config === 'string') {
@@ -32,7 +32,7 @@ function PSVNavBar(psv) {
   }
   // migration from object
   else if (!Array.isArray(this.config)) {
-    console.warn('PhotoSphereViewer: hashmap form of "navbar" is deprecated, use an array instead.');
+    console.warn('PanoSphereViewer: hashmap form of "navbar" is deprecated, use an array instead.');
 
     var config = this.config;
     this.config = [];
@@ -44,7 +44,7 @@ function PSVNavBar(psv) {
     }.bind(this));
 
     this.config.sort(function(a, b) {
-      return PhotoSphereViewer.DEFAULTS.navbar.indexOf(a) - PhotoSphereViewer.DEFAULTS.navbar.indexOf(b);
+      return PanoSphereViewer.DEFAULTS.navbar.indexOf(a) - PanoSphereViewer.DEFAULTS.navbar.indexOf(b);
     });
   }
 
@@ -153,7 +153,7 @@ PSVNavBar.prototype.getNavbarButton = function(id, silent) {
   });
 
   if (!button && !silent) {
-    console.warn('PhotoSphereViewer: button "' + id + '" not found in the navbar.');
+    console.warn('PanoSphereViewer: button "' + id + '" not found in the navbar.');
   }
 
   return button;

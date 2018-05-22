@@ -11,8 +11,8 @@ module.exports = function(grunt) {
 
   // some classes have to be executed before other
   var files_in_order = grunt.file.expand([
-    'src/js/PhotoSphereViewer.js',
-    'src/js/PhotoSphereViewer.*.js',
+    'src/js/PanoSphereViewer.js',
+    'src/js/PanoSphereViewer.*.js',
     'src/js/components/PSVComponent.js',
     'src/js/components/*.js',
     'src/js/buttons/PSVNavBarButton.js',
@@ -25,9 +25,10 @@ module.exports = function(grunt) {
     pkg: grunt.file.readJSON('package.json'),
 
     banner: '/*!\n' +
-    ' * Photo Sphere Viewer <%= grunt.option("tag") || pkg.version %>\n' +
+    ' * Pano Sphere Viewer <%= grunt.option("tag") || pkg.version %>\n' +
     ' * Copyright (c) 2014-2015 Jérémy Heleine\n' +
-    ' * Copyright (c) 2015-<%= grunt.template.today("yyyy") %> Damien "Mistic" Sorel\n' +
+    ' * Copyright (c) 2015-2018 Damien "Mistic" Sorel\n' +
+    ' * Copyright (c) 2018-<%= grunt.template.today("yyyy") %> Sunday Will\n' +
     ' * Licensed under MIT (https://opensource.org/licenses/MIT)\n' +
     ' */',
 
@@ -43,7 +44,7 @@ module.exports = function(grunt) {
             if (path.match(/\.svg$/)) {
               var filename = path.split('/').pop();
               src = src.replace(/[\r\n]/g, '');
-              return 'PhotoSphereViewer.ICONS[\'' + filename + '\'] = \'' + src + '\';';
+              return 'PanoSphereViewer.ICONS[\'' + filename + '\'] = \'' + src + '\';';
             }
             else {
               return src;
@@ -51,7 +52,7 @@ module.exports = function(grunt) {
           }
         },
         src: files_in_order.concat(['src/icons/*.svg']),
-        dest: 'dist/photo-sphere-viewer.js'
+        dest: 'dist/pano-sphere-viewer.js'
       }
     },
 
@@ -60,8 +61,8 @@ module.exports = function(grunt) {
      */
     wrap: {
       dist: {
-        src: 'dist/photo-sphere-viewer.js',
-        dest: 'dist/photo-sphere-viewer.js',
+        src: 'dist/pano-sphere-viewer.js',
+        dest: 'dist/pano-sphere-viewer.js',
         options: {
           separator: '',
           wrapper: function() {
@@ -88,8 +89,8 @@ module.exports = function(grunt) {
      */
     uglify: {
       dist: {
-        src: 'dist/photo-sphere-viewer.js',
-        dest: 'dist/photo-sphere-viewer.min.js'
+        src: 'dist/pano-sphere-viewer.js',
+        dest: 'dist/pano-sphere-viewer.min.js'
       }
     },
 
@@ -102,8 +103,8 @@ module.exports = function(grunt) {
         style: 'expanded'
       },
       lib: {
-        src: 'src/scss/photo-sphere-viewer.scss',
-        dest: 'dist/photo-sphere-viewer.css'
+        src: 'src/scss/pano-sphere-viewer.scss',
+        dest: 'dist/pano-sphere-viewer.css'
       }
     },
 
@@ -112,8 +113,8 @@ module.exports = function(grunt) {
      */
     cssmin: {
       dist: {
-        src: 'dist/photo-sphere-viewer.css',
-        dest: 'dist/photo-sphere-viewer.min.css'
+        src: 'dist/pano-sphere-viewer.css',
+        dest: 'dist/pano-sphere-viewer.min.css'
       }
     },
 

@@ -1,6 +1,6 @@
 /**
  * Notification class
- * @param {PhotoSphereViewer} psv
+ * @param {PanoSphereViewer} psv
  * @constructor
  * @extends module:components.PSVComponent
  * @memberof module:components

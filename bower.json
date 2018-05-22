@@ -1,5 +1,5 @@
 {
-  "name": "Photo-Sphere-Viewer",
+  "name": "Pano-Sphere-Viewer",
   "authors": [
     {
       "name": "Jérémy Heleine",
@@ -10,13 +10,18 @@
       "name": "Damien \"Mistic\" Sorel",
       "email": "contact@git.strangeplanet.fr",
       "homepage": "https://www.strangeplanet.fr"
+    },
+    {
+      "name": "Sunday Will",
+      "email": "sundaywillx@gmail.com",
+      "homepage": "https://github.com/sundaywill/pano-sphere-viewer"
     }
   ],
-  "description": "A JavaScript library to display Photo Sphere panoramas",
+  "description": "A JavaScript library to display Pano Sphere panoramas",
   "homepage": "https://photo-sphere-viewer.js.org",
   "main": [
-    "dist/photo-sphere-viewer.js",
-    "dist/photo-sphere-viewer.css"
+    "dist/pano-sphere-viewer.js",
+    "dist/pano-sphere-viewer.css"
   ],
   "dependencies": {
     "three.js": ">= 0.85.0",
@@ -25,14 +30,14 @@
     "doT": ">=1.0.3"
   },
   "keywords": [
-    "photosphere",
+    "panosphere",
     "panorama",
     "threejs"
   ],
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git://github.com/mistic100/Photo-Sphere-Viewer.git"
+    "url": "git://github.com/mistic100/Pano-Sphere-Viewer.git"
   },
   "ignore": [
     "**/.*",

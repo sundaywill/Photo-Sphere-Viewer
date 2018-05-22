@@ -117,7 +117,7 @@ PSVNavBarButton.prototype.enable = function() {
 };
 
 /**
- * @summary Set the button icon from {@link PhotoSphereViewer.ICONS}
+ * @summary Set the button icon from {@link PanoSphereViewer.ICONS}
  * @param {string} icon
  * @param {HTMLElement} [container] - default is the main button container
  * @private
@@ -127,7 +127,7 @@ PSVNavBarButton.prototype._setIcon = function(icon, container) {
     container = this.container;
   }
   if (icon) {
-    container.innerHTML = PhotoSphereViewer.ICONS[icon];
+    container.innerHTML = PanoSphereViewer.ICONS[icon];
     // classList not supported on IE11, className is read-only !!!!
     container.querySelector('svg').setAttribute('class', 'psv-button-svg');
   }

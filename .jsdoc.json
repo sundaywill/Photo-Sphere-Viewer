@@ -8,8 +8,8 @@
     "plugins/markdown"
   ],
   "templates": {
-    "systemName": "Photo Sphere Viewer API",
-    "systemSummary": "A JavaScript library to display Photo Sphere panoramas",
+    "systemName": "Pano Sphere Viewer API",
+    "systemSummary": "A JavaScript library to display Pano Sphere panoramas",
     "favicon": "build/jsdoc.png",
     "systemColor": "#1C9F72",
     "copyright": "Licensed under MIT License, documentation under CC BY 3.0.",

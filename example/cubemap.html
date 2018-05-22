@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link rel="stylesheet" href="../dist/photo-sphere-viewer.css">
+  <link rel="stylesheet" href="../dist/pano-sphere-viewer.min.css">
 
   <style>
     html, body {
@@ -24,6 +24,10 @@
       font-size: 22px;
       line-height: 20px;
     }
+
+    .psv-canvas-container {
+      height: 1000px;
+    }
   </style>
 </head>
 <body>
@@ -39,7 +43,7 @@
 <script src="../node_modules/three/examples/js/renderers/Projector.js"></script>
 <script src="../node_modules/three/examples/js/controls/DeviceOrientationControls.js"></script>
 <script src="../node_modules/three/examples/js/effects/StereoEffect.js"></script>
-<script src="../dist/photo-sphere-viewer.js"></script>
+<script src="../dist/pano-sphere-viewer.js"></script>
 
 <script>
   var panos = [
@@ -67,7 +71,7 @@
     }
   ];
 
-  var PSV = new PhotoSphereViewer({
+  var PSV = new PanoSphereViewer({
     container: 'photosphere',
     panorama: panos[0].url,
     caption: panos[0].desc,
@@ -119,21 +123,12 @@
         }
       }
 
-      a.push({
-        id: 'statue',
-        tooltip: 'Sky angel',
-        svgStyle: {
-          fill: 'rgba(255, 0, 111, 0.26)'
-        },
-        polygon_rad: [5.4196, 0.6801, 5.4644, 0.7610, 5.5004, 0.9194, 5.6522, 0.9363, 5.6923, 0.9757, 5.8132, 0.9662, 5.8625, 0.9315, 5.8905, 0.9991, 6.0215, 1.0558, 0.0822, 0.9023, 6.2390, 0.8732, 6.0377, 0.8648, 5.8348, 0.8780, 5.7862, 0.8678, 5.8175, 0.8614, 5.8431, 0.8128, 5.8354, 0.7028, 5.8620, 0.6204, 5.8815, 0.4776, 5.9339, 0.3234, 5.7591, 0.3510, 5.5885, 0.3273, 5.6381, 0.4327, 5.6353, 0.5043, 5.5959, 0.6228, 5.5877, 0.7108, 5.5952, 0.7519, 5.5775, 0.7502, 5.5021, 0.7012]
-      });
-
       return a;
     }())
   });
 
   PSV.on('click', function(e) {
-    if (e.marker && !e.marker.isPoly()) {
+    if (e.marker) {
       return;
     }
     PSV.addMarker({

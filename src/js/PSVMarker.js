@@ -1,7 +1,7 @@
 /**
  * Object representing a marker
  * @param {Object} properties - see {@link http://photo-sphere-viewer.js.org/markers.html#config} (merged with the object itself)
- * @param {PhotoSphereViewer} psv
+ * @param {PanoSphereViewer} psv
  * @constructor
  * @throws {PSVError} when the configuration is incorrect
  */
@@ -21,7 +21,7 @@ function PSVMarker(properties, psv) {
   }
 
   /**
-   * @member {PhotoSphereViewer}
+   * @member {PanoSphereViewer}
    * @readonly
    * @protected
    */
@@ -111,12 +111,6 @@ function PSVMarker(properties, psv) {
   if (this.isNormal()) {
     $el = document.createElement('div');
   }
-  else if (this.isPolygon()) {
-    $el = document.createElementNS(PSVUtils.svgNS, 'polygon');
-  }
-  else if (this.isPolyline()) {
-    $el = document.createElementNS(PSVUtils.svgNS, 'polyline');
-  }
   else {
     $el = document.createElementNS(PSVUtils.svgNS, this.type);
   }
@@ -132,7 +126,7 @@ function PSVMarker(properties, psv) {
  * @type {string[]}
  * @readonly
  */
-PSVMarker.types = ['image', 'html', 'polygon_px', 'polygon_rad', 'polyline_px', 'polyline_rad', 'rect', 'circle', 'ellipse', 'path'];
+PSVMarker.types = ['image', 'html', 'rect', 'circle', 'ellipse', 'path'];
 
 /**
  * @summary Determines the type of a marker by the available properties
@@ -173,30 +167,6 @@ PSVMarker.prototype.destroy = function() {
  */
 PSVMarker.prototype.isNormal = function() {
   return this.type === 'image' || this.type === 'html';
-};
-
-/**
- * @summary Checks if it is a polygon/polyline marker
- * @returns {boolean}
- */
-PSVMarker.prototype.isPoly = function() {
-  return this.isPolygon() || this.isPolyline();
-};
-
-/**
- * @summary Checks if it is a polygon marker
- * @returns {boolean}
- */
-PSVMarker.prototype.isPolygon = function() {
-  return this.type === 'polygon_px' || this.type === 'polygon_rad';
-};
-
-/**
- * @summary Checks if it is a polyline marker
- * @returns {boolean}
- */
-PSVMarker.prototype.isPolyline = function() {
-  return this.type === 'polyline_px' || this.type === 'polyline_rad';
 };
 
 /**
@@ -273,12 +243,6 @@ PSVMarker.prototype.update = function(properties) {
 
   if (this.isNormal()) {
     this._updateNormal();
-  }
-  else if (this.isPolygon()) {
-    this._updatePoly('polygon_rad', 'polygon_px');
-  }
-  else if (this.isPolyline()) {
-    this._updatePoly('polyline_rad', 'polyline_px');
   }
   else {
     this._updateSvg();
@@ -418,67 +382,4 @@ PSVMarker.prototype._updateSvg = function() {
 
   // compute x/y/z position
   this.position3D = this.psv.sphericalCoordsToVector3(this);
-};
-
-/**
- * @summary Updates a polygon marker
- * @param {'polygon_rad'|'polyline_rad'} key_rad
- * @param {'polygon_px'|'polyline_px'} key_px
- * @private
- */
-PSVMarker.prototype._updatePoly = function(key_rad, key_px) {
-  this._dynamicSize = true;
-
-  // set style
-  if (this.svgStyle) {
-    Object.getOwnPropertyNames(this.svgStyle).forEach(function(prop) {
-      this.$el.setAttributeNS(null, PSVUtils.dasherize(prop), this.svgStyle[prop]);
-    }, this);
-
-    if (this.isPolyline() && !this.svgStyle.fill) {
-      this.$el.setAttributeNS(null, 'fill', 'none');
-    }
-  }
-  else if (this.isPolygon()) {
-    this.$el.setAttributeNS(null, 'fill', 'rgba(0,0,0,0.5)');
-  }
-  else if (this.isPolyline()) {
-    this.$el.setAttributeNS(null, 'fill', 'none');
-    this.$el.setAttributeNS(null, 'stroke', 'rgb(0,0,0)');
-  }
-
-  // fold arrays: [1,2,3,4] => [[1,2],[3,4]]
-  [this[key_rad], this[key_px]].forEach(function(polygon) {
-    if (polygon && typeof polygon[0] !== 'object') {
-      for (var i = 0; i < polygon.length; i++) {
-        polygon.splice(i, 2, [polygon[i], polygon[i + 1]]);
-      }
-    }
-  });
-
-  // convert texture coordinates to spherical coordinates
-  if (this[key_px]) {
-    this[key_rad] = this[key_px].map(function(coord) {
-      var sphericalCoords = this.psv.textureCoordsToSphericalCoords({ x: coord[0], y: coord[1] });
-      return [sphericalCoords.longitude, sphericalCoords.latitude];
-    }, this);
-  }
-  // clean angles
-  else {
-    this[key_rad] = this[key_rad].map(function(coord) {
-      return [
-        PSVUtils.parseAngle(coord[0]),
-        PSVUtils.parseAngle(coord[1], true)
-      ];
-    });
-  }
-
-  // TODO : compute the center of the polygon
-  this.longitude = this[key_rad][0][0];
-  this.latitude = this[key_rad][0][1];
-
-  // compute x/y/z positions
-  this.positions3D = this[key_rad].map(function(coord) {
-    return this.psv.sphericalCoordsToVector3({ longitude: coord[0], latitude: coord[1] });
-  }, this);
 };

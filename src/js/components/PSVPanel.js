@@ -1,6 +1,6 @@
 /**
  * Panel class
- * @param {PhotoSphereViewer} psv
+ * @param {PanoSphereViewer} psv
  * @constructor
  * @extends module:components.PSVComponent
  * @memberof module:components
@@ -54,7 +54,7 @@ PSVPanel.prototype.create = function() {
 
   // Stop event bubling from panel
   if (this.psv.config.mousewheel) {
-    this.container.addEventListener(PhotoSphereViewer.SYSTEM.mouseWheelEvent, function(e) {
+    this.container.addEventListener(PanoSphereViewer.SYSTEM.mouseWheelEvent, function(e) {
       e.stopPropagation();
     });
   }

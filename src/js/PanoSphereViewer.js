@@ -1,33 +1,33 @@
 /**
- * @typedef {Object} PhotoSphereViewer.Point
+ * @typedef {Object} PanoSphereViewer.Point
  * @summary Object defining a point
  * @property {int} x
  * @property {int} y
  */
 
 /**
- * @typedef {Object} PhotoSphereViewer.Size
+ * @typedef {Object} PanoSphereViewer.Size
  * @summary Object defining a size
  * @property {int} width
  * @property {int} height
  */
 
 /**
- * @typedef {Object} PhotoSphereViewer.CssSize
+ * @typedef {Object} PanoSphereViewer.CssSize
  * @summary Object defining a size in CSS (px, % or auto)
  * @property {string} [width]
  * @property {string} [height]
  */
 
 /**
- * @typedef {Object} PhotoSphereViewer.Position
+ * @typedef {Object} PanoSphereViewer.Position
  * @summary Object defining a spherical position
  * @property {float} longitude
  * @property {float} latitude
  */
 
 /**
- * @typedef {PhotoSphereViewer.Position} PhotoSphereViewer.ExtendedPosition
+ * @typedef {PanoSphereViewer.Position} PanoSphereViewer.ExtendedPosition
  * @summary Object defining a spherical or texture position
  * @description A position that can be expressed either in spherical coordinates (radians or degrees) or in texture coordinates (pixels)
  * @property {float} longitude
@@ -37,15 +37,15 @@
  */
 
 /**
- * @typedef {Object} PhotoSphereViewer.CacheItem
+ * @typedef {Object} PanoSphereViewer.CacheItem
  * @summary An entry in the memory cache
  * @property {string} panorama
  * @property {THREE.Texture} image
- * @property {PhotoSphereViewer.PanoData} pano_data
+ * @property {PanoSphereViewer.PanoData} pano_data
  */
 
 /**
- * @typedef {Object} PhotoSphereViewer.PanoData
+ * @typedef {Object} PanoSphereViewer.PanoData
  * @summary Crop information of the panorama
  * @property {int} full_width
  * @property {int} full_height
@@ -56,7 +56,7 @@
  */
 
 /**
- * @typedef {Object} PhotoSphereViewer.ClickData
+ * @typedef {Object} PanoSphereViewer.ClickData
  * @summary Data of the `click` event
  * @property {int} client_x - position in the browser window
  * @property {int} client_y - position in the browser window
@@ -71,20 +71,20 @@
 
 /**
  * Viewer class
- * @param {Object} options - see {@link http://photo-sphere-viewer.js.org/#options}
+ * @param {Object} options - see {@link http://pano-sphere-viewer.js.org/#options}
  * @constructor
- * @fires PhotoSphereViewer.ready
+ * @fires PanoSphereViewer.ready
  * @throws {PSVError} when the configuration is incorrect
  */
-function PhotoSphereViewer(options) {
+function PanoSphereViewer(options) {
   // return instance if called as a function
-  if (!(this instanceof PhotoSphereViewer)) {
-    return new PhotoSphereViewer(options);
+  if (!(this instanceof PanoSphereViewer)) {
+    return new PanoSphereViewer(options);
   }
 
   // init global system variables
-  if (!PhotoSphereViewer.SYSTEM.loaded) {
-    PhotoSphereViewer._loadSystem();
+  if (!PanoSphereViewer.SYSTEM.loaded) {
+    PanoSphereViewer._loadSystem();
   }
 
   /**
@@ -92,7 +92,7 @@ function PhotoSphereViewer(options) {
    * @member {Object}
    * @readonly
    */
-  this.config = PSVUtils.clone(PhotoSphereViewer.DEFAULTS);
+  this.config = PSVUtils.clone(PanoSphereViewer.DEFAULTS);
   PSVUtils.deepmerge(this.config, options);
 
   // check container
@@ -101,31 +101,31 @@ function PhotoSphereViewer(options) {
   }
 
   // must support canvas
-  if (!PhotoSphereViewer.SYSTEM.isCanvasSupported) {
+  if (!PanoSphereViewer.SYSTEM.isCanvasSupported) {
     throw new PSVError('Canvas is not supported.');
   }
 
   // additional scripts if webgl not supported/disabled
-  if ((!PhotoSphereViewer.SYSTEM.isWebGLSupported || !this.config.webgl) && !PSVUtils.checkTHREE('CanvasRenderer', 'Projector')) {
+  if ((!PanoSphereViewer.SYSTEM.isWebGLSupported || !this.config.webgl) && !PSVUtils.checkTHREE('CanvasRenderer', 'Projector')) {
     throw new PSVError('Missing Three.js components: CanvasRenderer, Projector. Get them from three.js-examples package.');
   }
 
   // longitude range must have two values
   if (this.config.longitude_range && this.config.longitude_range.length !== 2) {
     this.config.longitude_range = null;
-    console.warn('PhotoSphereViewer: longitude_range must have exactly two elements.');
+    console.warn('PanoSphereViewer: longitude_range must have exactly two elements.');
   }
 
   if (this.config.latitude_range) {
     // latitude range must have two values
     if (this.config.latitude_range.length !== 2) {
       this.config.latitude_range = null;
-      console.warn('PhotoSphereViewer: latitude_range must have exactly two elements.');
+      console.warn('PanoSphereViewer: latitude_range must have exactly two elements.');
     }
     // latitude range must be ordered
     else if (this.config.latitude_range[0] > this.config.latitude_range[1]) {
       this.config.latitude_range = [this.config.latitude_range[1], this.config.latitude_range[0]];
-      console.warn('PhotoSphereViewer: latitude_range values must be ordered.');
+      console.warn('PanoSphereViewer: latitude_range values must be ordered.');
     }
   }
   // migrate legacy tilt_up_max and tilt_down_max
@@ -134,7 +134,7 @@ function PhotoSphereViewer(options) {
       this.config.tilt_down_max !== undefined ? this.config.tilt_down_max - Math.PI / 4 : -PSVUtils.HalfPI,
       this.config.tilt_up_max !== undefined ? this.config.tilt_up_max + Math.PI / 4 : PSVUtils.HalfPI
     ];
-    console.warn('PhotoSphereViewer: tilt_up_max and tilt_down_max are deprecated, use latitude_range instead.');
+    console.warn('PanoSphereViewer: tilt_up_max and tilt_down_max are deprecated, use latitude_range instead.');
   }
 
   // min_fov and max_fov must be ordered
@@ -142,21 +142,21 @@ function PhotoSphereViewer(options) {
     var temp_fov = this.config.max_fov;
     this.config.max_fov = this.config.min_fov;
     this.config.min_fov = temp_fov;
-    console.warn('PhotoSphereViewer: max_fov cannot be lower than min_fov.');
+    console.warn('PanoSphereViewer: max_fov cannot be lower than min_fov.');
   }
 
   if (this.config.cache_texture && (!PSVUtils.isInteger(this.config.cache_texture) || this.config.cache_texture < 0)) {
-    this.config.cache_texture = PhotoSphereViewer.DEFAULTS.cache_texture;
-    console.warn('PhotoSphereViewer: invalid value for cache_texture');
+    this.config.cache_texture = PanoSphereViewer.DEFAULTS.cache_texture;
+    console.warn('PanoSphereViewer: invalid value for cache_texture');
   }
 
   if ('panorama_roll' in this.config) {
     this.config.sphere_correction.roll = this.config.panorama_roll;
-    console.warn('PhotoSphereViewer: panorama_roll is deprecated, use sphere_correction.roll instead');
+    console.warn('PanoSphereViewer: panorama_roll is deprecated, use sphere_correction.roll instead');
   }
 
   if ('gyroscope' in this.config) {
-    console.warn('PhotoSphereViewer: gyroscope is deprecated, the control is automatically created if DeviceOrientationControls.js is loaded');
+    console.warn('PanoSphereViewer: gyroscope is deprecated, the control is automatically created if DeviceOrientationControls.js is loaded');
   }
 
   // min_fov/max_fov between 1 and 179
@@ -339,7 +339,7 @@ function PhotoSphereViewer(options) {
    * @readonly
    * @property {boolean} needsUpdate - if the view needs to be renderer
    * @property {boolean} isCubemap - if the panorama is a cubemap
-   * @property {PhotoSphereViewer.Position} position - current direction of the camera
+   * @property {PanoSphereViewer.Position} position - current direction of the camera
    * @property {THREE.Vector3} direction - direction of the camera
    * @property {float} anim_speed - parsed animation speed (rad/sec)
    * @property {int} zoom_lvl - current zoom level
@@ -362,11 +362,11 @@ function PhotoSphereViewer(options) {
    * @property {Promise} animation_promise - promise of the current animation (either go to position or image transition)
    * @property {Promise} loading_promise - promise of the setPanorama method
    * @property start_timeout - timeout id of the automatic rotation delay
-   * @property {PhotoSphereViewer.ClickData} dblclick_data - temporary storage of click data between two clicks
+   * @property {PanoSphereViewer.ClickData} dblclick_data - temporary storage of click data between two clicks
    * @property dblclick_timeout - timeout id for double click
-   * @property {PhotoSphereViewer.CacheItem[]} cache - cached panoramas
-   * @property {PhotoSphereViewer.Size} size - size of the container
-   * @property {PhotoSphereViewer.PanoData} pano_data - panorama metadata
+   * @property {PanoSphereViewer.CacheItem[]} cache - cached panoramas
+   * @property {PanoSphereViewer.Size} size - size of the container
+   * @property {PanoSphereViewer.PanoData} pano_data - panorama metadata
    */
   this.prop = {
     needsUpdate: true,
@@ -416,9 +416,9 @@ function PhotoSphereViewer(options) {
   };
 
   // init templates
-  Object.keys(PhotoSphereViewer.TEMPLATES).forEach(function(tpl) {
+  Object.keys(PanoSphereViewer.TEMPLATES).forEach(function(tpl) {
     if (!this.config.templates[tpl]) {
-      this.config.templates[tpl] = PhotoSphereViewer.TEMPLATES[tpl];
+      this.config.templates[tpl] = PanoSphereViewer.TEMPLATES[tpl];
     }
     if (typeof this.config.templates[tpl] === 'string') {
       this.config.templates[tpl] = doT.template(this.config.templates[tpl]);
@@ -426,7 +426,7 @@ function PhotoSphereViewer(options) {
   }, this);
 
   // init
-  this.parent.photoSphereViewer = this;
+  this.parent.panoSphereViewer = this;
 
   // create actual container
   this.container = document.createElement('div');
@@ -444,7 +444,7 @@ function PhotoSphereViewer(options) {
   this.zoom(tempZoom - 2 * (tempZoom - 50));
 
   // actual move speed depends on pixel-ratio
-  this.prop.move_speed = THREE.Math.degToRad(this.config.move_speed / PhotoSphereViewer.SYSTEM.pixelRatio);
+  this.prop.move_speed = THREE.Math.degToRad(this.config.move_speed / PanoSphereViewer.SYSTEM.pixelRatio);
 
   // set default position
   this.rotate({
@@ -509,7 +509,7 @@ function PhotoSphereViewer(options) {
 
       /**
        * @event ready
-       * @memberof PhotoSphereViewer
+       * @memberof PanoSphereViewer
        * @summary Triggered when the panorama image has been loaded and the viewer is ready to perform the first render
        */
       this.trigger('ready');
@@ -520,7 +520,7 @@ function PhotoSphereViewer(options) {
 /**
  * @summary Triggers an event on the viewer
  * @function trigger
- * @memberof PhotoSphereViewer
+ * @memberof PanoSphereViewer
  * @instance
  * @param {string} name
  * @param {...*} [arguments]
@@ -530,7 +530,7 @@ function PhotoSphereViewer(options) {
 /**
  * @summary Triggers an event on the viewer and returns the modified value
  * @function change
- * @memberof PhotoSphereViewer
+ * @memberof PanoSphereViewer
  * @instance
  * @param {string} name
  * @param {*} value
@@ -541,31 +541,31 @@ function PhotoSphereViewer(options) {
 /**
  * @summary Attaches an event listener on the viewer
  * @function on
- * @memberof PhotoSphereViewer
+ * @memberof PanoSphereViewer
  * @instance
  * @param {string|Object.<string, function>} name - event name or events map
  * @param {function} [callback]
- * @returns {PhotoSphereViewer}
+ * @returns {PanoSphereViewer}
  */
 
 /**
  * @summary Removes an event listener from the viewer
  * @function off
- * @memberof PhotoSphereViewer
+ * @memberof PanoSphereViewer
  * @instance
  * @param {string|Object.<string, function>} name - event name or events map
  * @param {function} [callback]
- * @returns {PhotoSphereViewer}
+ * @returns {PanoSphereViewer}
  */
 
 /**
  * @summary Attaches an event listener called once on the viewer
  * @function once
- * @memberof PhotoSphereViewer
+ * @memberof PanoSphereViewer
  * @instance
  * @param {string|Object.<string, function>} name - event name or events map
  * @param {function} [callback]
- * @returns {PhotoSphereViewer}
+ * @returns {PanoSphereViewer}
  */
 
-uEvent.mixin(PhotoSphereViewer);
+uEvent.mixin(PanoSphereViewer);
