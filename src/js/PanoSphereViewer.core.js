@@ -215,8 +215,9 @@ PanoSphereViewer.prototype._loadEquirectangularTexture = function(panorama) {
     var defer = D();
     var loader = new THREE.ImageLoader();
     var progress = pano_data ? 100 : 0;
+    var origin = window.location.origin;
 
-    loader.setCrossOrigin('anonymous');
+    loader.setCrossOrigin(origin);
 
     var onload = function(img) {
       progress = 100;
@@ -335,8 +336,9 @@ PanoSphereViewer.prototype._loadCubemapTexture = function(panorama) {
   var progress = [0, 0, 0, 0, 0, 0];
   var loaded = [];
   var done = 0;
+  var origin = window.location.origin;
 
-  loader.setCrossOrigin('anonymous');
+  loader.setCrossOrigin(origin);
 
   var onend = function() {
     loaded.forEach(function(img) {

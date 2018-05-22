@@ -1,5 +1,5 @@
 /*!
- * Pano Sphere Viewer 0.0.1
+ * Pano Sphere Viewer 0.0.2
  * Copyright (c) 2014-2015 Jérémy Heleine
  * Copyright (c) 2015-2018 Damien "Mistic" Sorel
  * Copyright (c) 2018-2018 Sunday Will
@@ -808,8 +808,9 @@ PanoSphereViewer.prototype._loadEquirectangularTexture = function(panorama) {
     var defer = D();
     var loader = new THREE.ImageLoader();
     var progress = pano_data ? 100 : 0;
+    var origin = window.location.origin;
 
-    loader.setCrossOrigin('anonymous');
+    loader.setCrossOrigin(origin);
 
     var onload = function(img) {
       progress = 100;
@@ -928,8 +929,9 @@ PanoSphereViewer.prototype._loadCubemapTexture = function(panorama) {
   var progress = [0, 0, 0, 0, 0, 0];
   var loaded = [];
   var done = 0;
+  var origin = window.location.origin;
 
-  loader.setCrossOrigin('anonymous');
+  loader.setCrossOrigin(origin);
 
   var onend = function() {
     loaded.forEach(function(img) {
