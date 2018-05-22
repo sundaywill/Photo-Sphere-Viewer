@@ -1,6 +1,6 @@
 {
   "name": "pano-sphere-viewer",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A JavaScript library to display Pano Sphere panoramas",
   "main": "dist/pano-sphere-viewer.js",
   "directories": {
